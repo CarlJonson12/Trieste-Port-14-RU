@@ -18,7 +18,7 @@
         #   inverted: true
         - !type:ReagentCondition
           reagent: FurryJuice
-          min: 5
+          min: 1
 
 - type: entity
   parent: DrinkGlass
