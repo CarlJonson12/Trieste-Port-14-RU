@@ -1,10 +1,10 @@
 - type: species
   id: Vulpkanin
   name: species-name-vulpkanin
-  roundStart: true
+  roundStart: false
   prototype: MobVulpkanin
   sprites: MobVulpkaninSprites
-  defaultSkinTone: "#5a3f2d"
+#  defaultSkinTone: "#5a3f2d" для белого цвета, рандом хз пока как
   markingLimits: MobVulpkaninMarkingLimits
   dollPrototype: MobVulpkaninDummy
   skinColoration: VulpkaninColors
