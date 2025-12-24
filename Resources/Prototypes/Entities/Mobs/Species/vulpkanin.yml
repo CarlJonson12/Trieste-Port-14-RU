@@ -14,6 +14,9 @@
     state: full
   - type: Body
     prototype: Vulpkanin
+  - type: Tag
+    tags:
+      - Furry
   - type: Speech
     speechSounds: Vulpkanin
     speechVerb: Vulpkanin
