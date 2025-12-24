@@ -1,35 +1,23 @@
+// LIGHT TODO: сделать ренж ивента минимальным, выебать только при крите,
+//стан крит на 5+сек жертве, сделать интервал между криками партнеров, лорные название вербов, не показывать верб при >ренж
+// HARD TODO: анимации
+// POSSIBLE FUTURE: цвет зависит от фурри, голос от пола
 using Content.Server.DoAfter;
 using Content.Shared.DoAfter;
-using Content.Shared.Hands.Components;
-using Content.Shared.Interaction;
 using Content.Shared.Verbs;
 using Content.Shared.Changed14.Fuckable;
 using Content.Shared.Tag;
 using Robust.Shared.Audio.Systems;
-using Content.Server.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Chemistry.Reagent;
-using Content.Server.Chemistry.EntitySystems;
-
-using Content.Shared.Mobs.Systems;
-using Content.Shared.Nutrition;
-using Content.Shared.Nutrition.Components;
-using Content.Shared.Nutrition.EntitySystems;
-using Robust.Shared.Containers;
-using Robust.Shared.Timing;
-using Content.Shared.Chemistry.Components.SolutionManager;
 
 namespace Content.Server.Changed14.Fuckable;
 
 public sealed class FuckableSystem : EntitySystem
 {
-    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly DoAfterSystem _doAfter = default!;
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -65,25 +53,27 @@ public sealed class FuckableSystem : EntitySystem
 
         var verb = new ActivationVerb()
         {
-            Act = () => HandleClimb(uid, user),
-            Text = Loc.GetString("Чпокнуть"),
-            Message = Loc.GetString("ОХ АХ"),
+            Act = () => HandleFuck(uid, user),
+            Text = Loc.GetString("changed-fuck-verb"),
+            Message = Loc.GetString("changed-fuck-desc"),
         };
 
         args.Verbs.Add(verb);
     }
 
-    private void HandleClimb(EntityUid uid, EntityUid user)
+    private void HandleFuck(EntityUid uid, EntityUid user)
     {
         var doAfterArgs = new DoAfterArgs(EntityManager, user, TimeSpan.FromSeconds(3), new FuckDoAfterEvent(), uid, uid)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
             NeedHand = false,
+            DistanceThreshold = 0.5f,
         };
 
         _doAfter.TryStartDoAfter(doAfterArgs);
 
     }
+
 
 }
