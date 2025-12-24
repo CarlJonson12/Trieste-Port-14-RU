@@ -28,6 +28,7 @@
 - type: entity
   parent: DrinkGlass
   id: FurryJuiceWhiteGlass
+  name: Glass of furry juice
   suffix: White
   components:
   - type: SolutionContainerManager
