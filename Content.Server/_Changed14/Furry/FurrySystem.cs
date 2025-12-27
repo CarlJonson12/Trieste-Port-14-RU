@@ -1,7 +1,3 @@
-// LIGHT TODO: сделать ренж ивента минимальным, выебать только при крите,
-//стан крит на 5+сек жертве, сделать интервал между криками партнеров, лорные название вербов, не показывать верб при >ренж
-// HARD TODO: анимации
-// POSSIBLE FUTURE: цвет зависит от фурри, голос от пола
 using Content.Server.DoAfter;
 using Content.Shared.DoAfter;
 using Content.Shared.Verbs;
@@ -9,71 +5,56 @@ using Content.Shared.Changed14.Fuckable;
 using Content.Shared.Tag;
 using Robust.Shared.Audio.Systems;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.Changed14.Furry;
+using Content.Server.Body.Systems;
+using Content.Shared.Administration;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Part;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Hands.Components;
 
-namespace Content.Server.Changed14.Fuckable;
 
-public sealed class FuckableSystem : EntitySystem
+
+namespace Content.Server.Changed14.Furry;
+
+public sealed class FurrySystem : EntitySystem
 {
     [Dependency] private readonly DoAfterSystem _doAfter = default!;
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<FuckableComponent, GetVerbsEvent<ActivationVerb>>(OnActivationVerb);
-        SubscribeLocalEvent<FuckableComponent, FuckDoAfterEvent>(OnFuckDoAfter);
-    }
-
-    private void OnFuckDoAfter(EntityUid uid, FuckableComponent comp, ref FuckDoAfterEvent args)
-    {
-
-        if (args.Cancelled)
-            return;
-
-        _audio.PlayPvs(comp.FurryCumSound, args.User);
-        _audio.PlayPvs(comp.FuckableCumSound, args.User);
-
-        if (!_solutionContainer.TryGetInjectableSolution(uid, out var injectable, out _))
-            return;
-        _solutionContainer.TryAddReagent(injectable.Value, comp.ReagentId, 5);
+        SubscribeLocalEvent<FurryComponent, ComponentStartup>(OnStartup);
 
     }
 
-    private void OnActivationVerb(EntityUid uid, FuckableComponent comp, ref GetVerbsEvent<ActivationVerb> args)
+    private void OnStartup(EntityUid uid, FurryComponent component, ComponentStartup args)
     {
-        if (!args.CanAccess || !args.CanInteract)
-            return;
-
-        if (!_tag.HasTag(args.User, "Furry"))
-            return;
-
-        var user = args.User;
-
-        var verb = new ActivationVerb()
+        if (TryComp<HandsComponent>(uid, out var handsComp))
         {
-            Act = () => HandleFuck(uid, user),
-            Text = Loc.GetString("changed-fuck-verb"),
-            Message = Loc.GetString("changed-fuck-desc"),
-        };
-
-        args.Verbs.Add(verb);
+            var handId = $"{uid}-hand-{1}";
+            _hands.RemoveHand(uid, "hand");
+            // RemComp(uid, handsComp);
+        }
     }
-
-    private void HandleFuck(EntityUid uid, EntityUid user)
-    {
-        var doAfterArgs = new DoAfterArgs(EntityManager, user, TimeSpan.FromSeconds(3), new FuckDoAfterEvent(), uid, uid)
-        {
-            BreakOnMove = true,
-            BreakOnDamage = true,
-            NeedHand = false,
-            DistanceThreshold = 0.5f,
-        };
-
-        _doAfter.TryStartDoAfter(doAfterArgs);
-
-    }
-
-
 }
+
+// эта хуйня не работает
+//                          ,-------.                 /
+//                        ,'         `.           ,--'
+//                      ,'             `.      ,-;--        _.-
+//                     /                 \ ---;-'  _.=.---''
+//   +-------------+  ;    X        X     ---=-----'' _.-------
+//   |    -----    |--|                   \-----=---:i-
+//   +XX|'i:''''''''  :                   ;`--._ ''---':----
+//   /X+-)             \   \         /   /      ''--._  `-
+//  .XXX|)              `.  `.     ,'  ,'             ''---.
+//    X\/)                `.  '---'  ,'                     `-
+//      \                   `---+---'
+//       \                      |
+//        \.                    |
+//          `-------------------+

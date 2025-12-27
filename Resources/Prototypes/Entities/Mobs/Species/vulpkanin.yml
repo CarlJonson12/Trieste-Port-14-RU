@@ -14,9 +14,9 @@
     state: full
   - type: Body
     prototype: Vulpkanin
-  - type: Tag
-    tags:
-      - Furry
+  # - type: Tag
+  #   tags:
+  #     - Furry
   - type: Speech
     speechSounds: Vulpkanin
     speechVerb: Vulpkanin
@@ -34,8 +34,8 @@
     animation: WeaponArcClaw
     damage:
       types:
-        Piercing: 2
-        Slash: 3
+        # Piercing: 2
+        Slash: 8
   - type: Temperature # Same as moth temperatures until below is solved.
     heatDamageThreshold: 320 # TODO: 315 when there is a way to make the temperature alert not blink to the side of the screen and disappear when you "sweat" at 39C.
     coldDamageThreshold: 230 # TODO: 220 when the above is solved.

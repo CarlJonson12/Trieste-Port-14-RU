@@ -11,7 +11,7 @@
       metabolismRate: 0.25
       effects:
       - !type:Polymorph
-        prototype: AdminVulpSmite
+        prototype: FurryMorph
         conditions:
         # - !type:MetabolizerTypeCondition
         #   type: [Animal]
